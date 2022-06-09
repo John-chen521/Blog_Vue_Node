@@ -31,7 +31,6 @@ Vue.prototype.$jsonp = VueJsonp
 
 
 const blog = axios.create({ // 博客后台api地址
-  // baseURL: 'http://hikari.top:8090',
   baseURL: 'http://localhost:3000',
   // withCredentials: true
 })

@@ -91,14 +91,14 @@ const routes = [
       // console.log(userInfo)
       if (!userInfo) return next('/error')
       else {
-        const type = userInfo.type
+        const type = userInfo
         // console.log(type)
-        if (type !== '1') return next('/error')
+        if (type !== '0') return next('/error')
         next()
       }
       next()
     },
-    // redirect: '/admin/index',
+    redirect: '/admin/index',
     children: [
       { path: '/admin/index', component: AdminIndex },
       { path: '/admin/blogs', component: Blogs },

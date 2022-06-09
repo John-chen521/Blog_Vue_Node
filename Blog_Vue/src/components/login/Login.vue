@@ -83,9 +83,9 @@ export default {
         if (res.code !== 200) return this.$message({ message: '用户名或密码错误', type: 'error', offset: 80 })
         this.$message({ message: '登录成功', type: 'success', offset: 80 });
         this.$refs.loginFormRef.resetFields()
-        window.sessionStorage.setItem("token", JSON.stringify(res.data.token));
+        window.sessionStorage.setItem("token", JSON.stringify(res.token));
         // sessionStorage.setItem("key", "value");
-        window.sessionStorage.setItem("user", JSON.stringify(res.data.user));
+        window.sessionStorage.setItem("user", JSON.stringify(res.data[0].type));
         this.$store.commit('getUserInfo')
         this.$store.commit('cancelLFV')
       })

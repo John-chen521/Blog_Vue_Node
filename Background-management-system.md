@@ -2,7 +2,7 @@
  * @Author: 陈永平 956086636@qq.com
  * @Date: 2022-06-02 16:37:33
  * @LastEditors: 陈永平 956086636@qq.com
- * @LastEditTime: 2022-06-08 21:09:20
+ * @LastEditTime: 2022-06-09 21:15:42
  * @FilePath: \myblog-frontend-master\Background-management-system.md
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -57,6 +57,7 @@ Multer 是一个 node.js 中间件，用于处理 multipart/form-data 类型的�
 | id       | 用户 ID  |      |
 | username | 用户名   |      |
 | password | 密码     |      |
+
 ## 数据库设计
 >数据库名：Blog-database
 >数据库账号 : root
@@ -67,7 +68,14 @@ Workbench创建数据库
 2. 新建用户和权限
 3. 创建表
 ## 操作数据库进行登录验证
-数据库查询方法，SQL语句
+数据库查询方法，SQL拼接语句查询到前端POST请求发送过来的账户信息
+后台发送数据库中数据给前端
+**重要** 使用nodejs实现jwt验证
+在后端加密解密TOKEN(JWT)(目前最流行的跨域认证解决方案)
+将用户信息进行加密处理，加密成TOKEN给前端，前端将TOKEN保存在页面上，(localstoragy session)
+之后，客户端每次与服务器通信，都要带上这个JWT字符串，从而进行身份认证。一般将JWT放在HTTP请求头的Authorization字段中
+jwt由三部分组成：Header(安全相关)、Payload(真正用户信息)、Signature(安全相关)
+以上 登录接口完毕
 ## nodejs的express框架使用
-遇到问题：
+遇到问题：postman的使用  传参数 请求体  选项
 contentType 中常见的选项有： application/x-www-form-urlencoded 、 application/json、text/xml 、 multipart/form-data 这些选项用于表明发送数据流的类型，后端根据类型进行对应的数据解析。
