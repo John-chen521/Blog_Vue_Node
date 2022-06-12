@@ -2,7 +2,7 @@
  * @Author: 陈永平 956086636@qq.com
  * @Date: 2022-06-02 16:37:33
  * @LastEditors: 陈永平 956086636@qq.com
- * @LastEditTime: 2022-06-11 21:58:30
+ * @LastEditTime: 2022-06-12 22:21:17
  * @FilePath: \myblog-frontend-master\Background-management-system.md
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -79,6 +79,20 @@ Multer 是一个 node.js 中间件，用于处理 multipart/form-data 类型的�
 | createtime | 入网时间           | date     |                        |
 | modifytime | 最近一次修改时间   | datetime | CURRENT_TIMESTAMP      |
 | type       | 身份类型           | int      | (1管理员 2学生 3教师 ) |
+### 获取博客信息
+#### 获取登录用户随笔信息
+- 请求路径：/blog/getEssay
+- 请求方法：get
+
+| 参数名 | 参数说明         | 数据类型 | 备注 |
+| ------ | ---------------- | -------- | ---- |
+| u_id   | 用来获取的用户id | int      | 必填 |
+
+- 响应参数
+
+| 参数名 | 参数说明       | 数据类型 | 备注 |
+| ------ | -------------- | -------- | ---- |
+| data   | 当前页用户数据 | json     |      |
 ## 数据库设计
 >数据库名：Blog-database
 >数据库账号 : root
@@ -119,6 +133,35 @@ async getUserInfo () {
           }
         })
     },
+```
+## 获取随笔信息markdown文本格式展示
+随笔部分用Timeline风格展示
+后端建立新路由：blog.js -> app.js中挂载
+获取MySQL数据类型之日期与时间类型之格式转换
+ISO-8601格式的时间 转换为正常时间
+方法
+1. 使用库moment-timezone
+```javascript
+//demo
+var date = '2017-09-28T16:00:00Z';
+var timezone = '"Asia/Shanghai';
+moment(date).tz(timezone).format('YYYY-MM-DD hh:mm:ss');
+//转化为TZ格式
+moment().format('YYYY-MM-DDTHH:mm:[00][Z]')
+```
+```javascript
+function myTimeToLocal(inputTime){
+ if(!inputTime && typeof inputTime !== 'number'){
+  return '';
+ }
+ var localTime = '';
+ inputTime = new Date(inputTime).getTime();
+ const offset = (new Date()).getTimezoneOffset();
+ localTime = (new Date(inputTime - offset * 60000)).toISOString();
+ localTime = localTime.substr(0, localTime.lastIndexOf('.'));
+ localTime = localTime.replace('T', ' ');
+ return localTime;
+}
 ```
 ## nodejs的express框架使用
 遇到问题：postman的使用  传参数 请求体  选项

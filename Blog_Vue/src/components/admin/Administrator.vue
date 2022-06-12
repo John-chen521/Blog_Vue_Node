@@ -97,7 +97,6 @@ export default {
       this.userFrom.email = res.email
       this.userFrom.username = res.username
       this.userFrom.nickname = res.nickname
-      console.log(this.basePath + "/images/" + res.avatar)
       this.avatar = this.basePath + "/images/" + res.avatar
     },
     // 修改头像成功

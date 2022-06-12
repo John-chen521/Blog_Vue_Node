@@ -20,9 +20,11 @@ import waterfall from 'vue-waterfall2'
 import vcolorpicker from 'vcolorpicker'
 import * as echarts from 'echarts'
 import md5 from 'js-md5'
+import moment from 'moment-timezone'
 // import { component } from 'vue/types/umd'
 
 
+Vue.prototype.$moment = moment;
 Vue.prototype.$md5 = md5;
 Vue.prototype.$marked = marked
 Vue.prototype.$http = axios
@@ -61,6 +63,7 @@ Vue.use(mavonEditor)
 Vue.use(VueJsonp)
 Vue.use(vcolorpicker)
 Vue.use(waterfall)
+Vue.use(moment)
 
 Vue.filter('dataFormat', function (originVal) {
   const dt = new Date(originVal)

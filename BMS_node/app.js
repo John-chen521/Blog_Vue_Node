@@ -2,7 +2,7 @@
  * @Author: 陈永平 956086636@qq.com
  * @Date: 2022-06-02 20:03:56
  * @LastEditors: 陈永平 956086636@qq.com
- * @LastEditTime: 2022-06-08 14:42:17
+ * @LastEditTime: 2022-06-12 16:45:27
  * @FilePath: \myblog-frontend-master\BMS_node\app.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,6 +14,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var blogRouter = require('./routes/blog');
 
 var app = express();
 var bodyParser = require('body-parser');
@@ -51,6 +52,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/blog', blogRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
