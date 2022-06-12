@@ -1,3 +1,11 @@
+/*
+ * @Author: 陈永平 956086636@qq.com
+ * @Date: 2022-06-09 14:56:03
+ * @LastEditors: 陈永平 956086636@qq.com
+ * @LastEditTime: 2022-06-11 19:22:40
+ * @FilePath: \Blog_Vue_Node\BMS_node\utils\jwtUtils.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 // 安全拦截器
 const jwt = require("jsonwebtoken");
 /**
@@ -7,18 +15,18 @@ const jwt = require("jsonwebtoken");
  * @param success
  * @param error
  */
-function verify (token,secretkey,success,error){
-    jwt.verify(token,secretkey,function(err,decode){
-        if(err){
-            if (error) {
-                error(err);
-            }
-        }else{
-            if (success) {
-                success(decode);
-            }
-        }
-    })
+function verify (token, secretkey, success, error) {
+  jwt.verify(token, secretkey, function (err, decode) {
+    if (err) {
+      if (error) {
+        error(err);
+      }
+    } else {
+      if (success) {
+        success(decode);
+      }
+    }
+  })
 }
 
 /**
@@ -28,34 +36,34 @@ function verify (token,secretkey,success,error){
  * @param expiresIn 过期时间 秒
  * @returns {number | PromiseLike<ArrayBuffer>}
  */
-function sign (load,secretkey,expiresIn) {
-    var token = jwt.sign(load,secretkey,{expiresIn: expiresIn});
-    return token;
+function sign (load, secretkey, expiresIn) {
+  var token = jwt.sign(load, secretkey, { expiresIn: expiresIn });
+  return token;
 }
 
 /**异步转同步
  * 这个再app.js路由调用中已经转换过一次,所以不用重复转换
  * @param token
  * @param secretkey
- * @returns {Promise<any>}
+ * @returns {Promise<any>} 异步的Promise对象
  */
- function   verifysync (token,secretkey){
-    return   new Promise((resolve,reject)=>{
-        jwt.verify(token,secretkey,function(err,decode){
-            if (err) {
-                console.log(err.message);
-                resolve({err:'error',msg:'会话已过期'})
-            }else{
-                console.log("解密成功")
-                resolve(decode)
-            }
-        })
-
+function verifysync (token, secretkey) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, secretkey, function (err, decode) {
+      if (err) {
+        console.log(err.message);
+        resolve({ err: 'error', msg: '会话已过期' })
+      } else {
+        console.log("解密成功")
+        resolve(decode)
+      }
     })
+
+  })
 
 }
 
-module.exports = {verify,sign,verifysync};
+module.exports = { verify, sign, verifysync };
 
 
 /*//使用解密

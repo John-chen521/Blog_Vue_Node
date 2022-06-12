@@ -3,7 +3,7 @@
     <el-card shadow="hover" style="text-align: left;margin-bottom: 10px">
       <div class="header">
         <div class="avatar-area">
-          <el-image class="avatar" :src="userInfo.avatar"></el-image>
+          <el-image class="avatar" :src="this.avatar"></el-image>
           <div class="avatar-upload" @click="dialogVisible =true">
             <el-image class="camera" :src="avatarUpload"></el-image>
           </div>
@@ -18,9 +18,9 @@
     <el-card shadow="hover">
       <h1 class="el-card__header" style="text-align: left;margin: 0">基本信息</h1>
       <el-form :data="userFrom" label-width="100px" label-position="left"
-               style="text-align: left;width: 80%;margin-left: 30px;margin-top: 20px">
+        style="text-align: left;width: 80%;margin-left: 30px;margin-top: 20px">
         <el-form-item label="用户类型">
-          <div style="margin-left: 10px">{{userFrom.type===1?'管理员':'普通用户'}}</div>
+          <div style="margin-left: 10px">{{this.usertype==0?'管理员':'普通用户'}}</div>
         </el-form-item>
         <el-form-item label="昵称" prop="nickname">
           <el-input v-model="userFrom.nickname"></el-input>
@@ -36,12 +36,8 @@
 
     </el-card>
     <el-dialog style="z-index: 20000" title="上传头像" :visible.sync="dialogVisible">
-      <el-upload
-              v-if="uploading"
-              class="avatar-uploader"
-              action="http://hikari.top:8090/upload"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess">
+      <el-upload v-if="uploading" class="avatar-uploader" action="http://hikari.top:8090/upload" :show-file-list="false"
+        :on-success="handleAvatarSuccess">
         <img v-if="imageUrl" :src="imageUrl" class="new-avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
@@ -56,16 +52,17 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
-  data() {
+  data () {
     return {
       userFrom: {
         nickname: '',
         username: '',
         email: ''
       },
+      avatar: '',
       dialogVisible: false,
       avatarHover: false,
       uploading: true,
@@ -79,21 +76,38 @@ export default {
     ])
 
   },
-  created() {
-    this.getUserInfo()
+  created () {
+    this.getUserType(),
+      this.getUserInfo()
   },
   methods: {
-    getUserInfo() {
-      this.userFrom = JSON.parse(window.sessionStorage.getItem('user'));
+    getUserType () {
+      this.usertype = JSON.parse(window.sessionStorage.getItem('user'));
+
+    },
+    async getUserInfo () {
+      const { data: res } = await this.$blog(
+        {
+          url: "/users/getUserDataByToken",
+          methods: 'get',
+          params: {
+            token: JSON.parse(window.sessionStorage.getItem('token'))
+          }
+        })
+      this.userFrom.email = res.email
+      this.userFrom.username = res.username
+      this.userFrom.nickname = res.nickname
+      console.log(this.basePath + "/images/" + res.avatar)
+      this.avatar = this.basePath + "/images/" + res.avatar
     },
     // 修改头像成功
-    handleAvatarSuccess(res) {
+    handleAvatarSuccess (res) {
       this.imageUrl = res.data
     },
     // 修改头像
-    async setAvatar() {
+    async setAvatar () {
       // console.log(this.imageUrl)
-      const {data: res} = await this.$blog.post('/admin/setAvatar', {
+      const { data: res } = await this.$blog.post('/admin/setAvatar', {
         pic_url: this.imageUrl,
         user_id: this.userInfo.id
       })
@@ -102,8 +116,8 @@ export default {
       window.sessionStorage.setItem('user', JSON.stringify(this.userInfo))
       window.location.reload()
     },
-    async changeUserInfo() {
-      const {data: res} = await this.$blog.post('/admin/user', {
+    async changeUserInfo () {
+      const { data: res } = await this.$blog.post('/admin/user', {
         user: this.userFrom
       })
       console.log(res)
@@ -120,90 +134,89 @@ export default {
 </script>
 
 <style scoped lang="less">
-  .avatar {
+.avatar {
+  width: 100px;
+  height: 100px;
+  border: 2px solid white;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.06);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.avatar-upload {
+  background-color: rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+}
+
+.camera {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+.avatar-upload:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-start;
+
+  .avatar-area {
     width: 100px;
-    height: 100px;
-    border: 2px solid white;
-    box-shadow: 0 0 10px 2px rgba(0, 0, 0, .06);
-    border-radius: 50%;
-    box-sizing: border-box;
-  }
-
-  .avatar-upload {
-    background-color: rgba(0, 0, 0, 0.15);
-    z-index: 10000;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-  }
-
-  .camera {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-  }
-
-  .avatar-upload:hover {
-    opacity: 1;
-    cursor: pointer;
-  }
-
-  .header {
-    display: flex;
-    justify-content: flex-start;
-
-    .avatar-area {
-      width: 100px;
-      position: relative;
-      margin-right: 20px;
-    }
-  }
-
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
     position: relative;
-    overflow: hidden;
+    margin-right: 20px;
   }
+}
 
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 120px;
-    height: 120px;
-    line-height: 120px;
-    text-align: center;
-    border: 2px dashed #d9d9d9;
-    border-radius: 20px;
-  }
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
 
-  .new-avatar {
-    width: 120px;
-    height: 120px;
-    display: block;
-  }
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+  border: 2px dashed #d9d9d9;
+  border-radius: 20px;
+}
 
-  .change-password {
-    color: #3a8ee6;
-    font-size: 12px;
-    margin-left: 10px;
-    font-weight: normal;
-  }
+.new-avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
 
-  .change-password:hover {
-    cursor: pointer;
-  }
+.change-password {
+  color: #3a8ee6;
+  font-size: 12px;
+  margin-left: 10px;
+  font-weight: normal;
+}
 
+.change-password:hover {
+  cursor: pointer;
+}
 </style>

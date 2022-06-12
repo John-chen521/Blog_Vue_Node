@@ -28,12 +28,14 @@ Vue.prototype.$marked = marked
 Vue.prototype.$http = axios
 Vue.prototype.$echarts = echarts
 Vue.prototype.$jsonp = VueJsonp
+Vue.prototype.basePath = 'http://localhost:3000' //数据库基准地址
 
 
 const blog = axios.create({ // 博客后台api地址
   baseURL: 'http://localhost:3000',
   // withCredentials: true
 })
+
 
 const picture = axios.create({ // 图片服务器api地址
   baseURL: 'http://hikari.top/pic_server'
